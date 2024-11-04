@@ -152,6 +152,7 @@ I am currently a postdoctoral researcher in the Department of Computer Science a
 ### Professional Services
 
 - IEEE, ACM, CCF member
+- IEEE (Denmark Section) Computer Society Secretary
 - Reviewer for several journals, including ACM Transactions on Intelligent Systems and Technology (TIST), Springer Machine Learning, and IEEE Transactions on Vehicular Technology (TVT).
 - A member of program committees of several international conferences, including ICLR, KDD, AAAI, and CVPR.
 
@@ -161,6 +162,9 @@ I am currently a postdoctoral researcher in the Department of Computer Science a
 - Mentoring two Ph.D. students, i.e., Tonglong Wei and Letian Gong, in the project [[STTrajGen]].
 
 ### Teaching
+
+**PBL course & Co-supervision:** *DAT1/SW1*@Aalborg University
+- Oct 23 2024, Aalborg, Denmark
 
 **Guest Lecture:** *Self-supervised Learning of Trajectory Data*, [[Self-supervised Learning of Trajectory Data.pdf|Slides]]
 - Curriculum: *Time and Spatial Analysis*@Aalborg University

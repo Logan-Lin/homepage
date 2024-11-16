@@ -153,7 +153,7 @@ I am currently a postdoctoral researcher in the Department of Computer Science a
 
 - IEEE, ACM, CCF member
 - IEEE (Denmark Section) Computer Society Secretary
-- Reviewer for several journals, including ACM Transactions on Intelligent Systems and Technology (TIST), Springer Machine Learning, and IEEE Transactions on Vehicular Technology (TVT).
+- Reviewer for several journals, including ACM Transactions on Intelligent Systems and Technology (TIST), IEEE Transactions on Industrial Informatics (TII), Springer Machine Learning, and IEEE Transactions on Vehicular Technology (TVT).
 - A member of program committees of several international conferences, including ICLR, KDD, AAAI, and CVPR.
 
 ### Mentoring Activities

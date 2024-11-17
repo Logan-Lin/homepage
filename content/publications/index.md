@@ -25,6 +25,9 @@ tags:
 - Authors: Yuxin Jia, Youfang Lin, Xinyan Hao, **Yan Lin**, Shengnan Guo, Huaiyu Wan
 - Conference: NeurIPS, URL: https://openreview.net/forum?id=y08bkEtNBK, 2023.
 
+[[DUET]]: Dual Clustering Enhanced Multivariate Time Series Forecasting.
+- Authors: Xiangfei Qiu, Xingjian Wu, **Yan Lin**, Chenjuan Guo, Jilin Hu, Bin Yang
+- Conference: KDD, 2025.
 
 ## Journal
 

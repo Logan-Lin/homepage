@@ -73,6 +73,10 @@ I am currently a postdoctoral researcher in the Department of Computer Science a
 - Authors: Yuxin Jia, Youfang Lin, Xinyan Hao, **Yan Lin**, Shengnan Guo, Huaiyu Wan
 - Conference: NeurIPS, URL: https://openreview.net/forum?id=y08bkEtNBK, 2023.
 
+[[DUET]]: Dual Clustering Enhanced Multivariate Time Series Forecasting.
+- Authors: Xiangfei Qiu, Xingjian Wu, **Yan Lin**, Chenjuan Guo, Jilin Hu, Bin Yang
+- Conference: KDD, 2025.
+
 ### Journal
 
 [[TALE]]: Pre-training time-aware location embeddings from spatial-temporal trajectories. [Paper](https://ieeexplore.ieee.org/abstract/document/9351627), [Code](https://github.com/Logan-Lin/TALE)

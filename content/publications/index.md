@@ -1,7 +1,5 @@
 ---
 title: Publications
-draft: false
-tags:
 ---
 ## Conference
 
@@ -13,9 +11,13 @@ tags:
 - Authors: **Yan Lin**, Huaiyu Wan, Jilin Hu, Shengnan Guo, Bin Yang, Christian S. Jensen, Youfang Lin
 - Conference: SIGMOD, 2024, 1(3), Article No. 217.
 
-[[Mobility-LLM]]: Learning Visiting Intentions and Travel Preference from Human Mobility Data with Large Language Models.
+[[Mobility-LLM]]: Learning Visiting Intentions and Travel Preference from Human Mobility Data with Large Language Models. [Paper](https://openreview.net/forum?id=0feJEykDRx), [Poster](https://neurips.cc/virtual/2024/poster/96914)
 - Authors: Letian Gong\*, **Yan Lin**\*, Xinyue Zhang, Yiwen Lu, Xuedi Han, Yichen Liu, Shengnan Guo, Youfang Lin, Huaiyu Wan
 - Conference: NeurIPS, 2024.
+
+[[DutyTTE]]: Deciphering Uncertainty in Origin-Destination Travel Time Estimation. [Code](https://anonymous.4open.science/r/DutyTTE-31D3/README.md)
+- Authors: Xiaowei Mao\*, **Yan Lin**\*, Shengnan Guo, Yubin Chen, Xingyu Xian, Haomin Wen, Qisen Xu, Youfang Lin, Huaiyu Wan
+- Conference: AAAI, 2024
 
 [[CACSR]]: Contrastive Pre-training with Adversarial Perturbations for Check-In Sequence Representation Learning. [Paper](https://ojs.aaai.org/index.php/AAAI/article/view/25546), [Code](https://github.com/LetianGong/CACSR)
 - Authors: Letian Gong, Youfang Lin, Shengnan Guo, **Yan Lin**, Tianyi Wang, Erwen Zheng, Zeyu Zhou, Huaiyu Wan.
@@ -38,6 +40,10 @@ tags:
 [[MMTEC]]: Pre-training General Trajectory Embeddings with Maximum Multi-view Entropy Coding. [Paper](https://ieeexplore.ieee.org/abstract/document/10375102), [Preprint](https://arxiv.org/abs/2207.14539), [Code](https://github.com/Logan-Lin/MMTEC)
 - Authors: **Yan Lin**, Huaiyu Wan, Shengnan Guo, Jilin Hu, Christian S. Jensen, Youfang Lin
 - Journal: IEEE TKDE, DOI: 10.1109/TKDE.2023.3347513, 2023.
+
+[[UniTE]]: A Survey and Unified Pipeline for Pre-training Spatiotemporal Trajectory Embeddings. [Preprint](https://arxiv.org/abs/2407.12550), [Code](https://github.com/Logan-Lin/UniTE)
+- Authors: **Yan Lin**, Zeyu Zhou, Yicheng Liu, Haochen Lv, Haomin Wen, Tianyi Li, Yushuai Li, Christian S. Jensen, Shengnan Guo, Youfang Lin, Huaiyu Wan
+- Journal: IEEE TKDE, 2024
 
 [[IAGCN]]: Inductive and Adaptive Graph Convolution Networks Equipped with Constraint Task for Spatial-Temporal Traffic Data Kriging. [Paper](https://www.sciencedirect.com/science/article/pii/S0950705123010730), [Code](https://github.com/wtl52656/IAGCN)
 - Authors: Tonglong Wei, Youfang Lin, Shengnan Guo, **Yan Lin**, Yiji Zhao, Xiyuan Jin, Zhihao Wu, Huaiyu Wan
@@ -63,10 +69,13 @@ tags:
 - Authors: Tonglong Wei, Youfang Lin, Shengnan Guo, **Yan Lin**, Yiheng Huang, Chenyang Xiang, Yuqing Bai, Menglu Ya, Huaiyu Wan
 - Journal: IEEE TKDE, DOI: 10.1109/TKDE.2024.3460051, 2024.
 
+[[STCDM]]: Spatio-Temporal Contrastive Diffusion Model for Check-in Sequence Generation.
+- Authors: Letian Gong, Shengnan Guo, **Yan Lin**, Yichen Liu, Erwen Zheng, Yiwei Shuang, Youfang Lin, Jilin Hu, Huaiyu Wan
+- Journal: IEEE TKDE, 2024
+
 ## In-progress
 
 - TrajCogn: Leveraging LLMs for Cognizing Movement Patterns and Travel Purposes from Trajectories. [Preprint](https://arxiv.org/abs/2405.12459)
-- UniTE: A Survey and Unified Pipeline for Pre-training ST Trajectory Embeddings. [Preprint](https://arxiv.org/abs/2407.12550)
 - UVTM: Universal Vehicle Trajectory Modeling with ST Feature Domain Generation. [Preprint](https://arxiv.org/abs/2402.07232)
 
 > [!note] Notes

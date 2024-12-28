@@ -1,6 +1,6 @@
 > Topic: [[Spatiotemporal Data Mining]]
 
-Mobility-LLM: Learning Visiting Intentions and Travel Preference from Human Mobility Data with Large Language Models.
+Mobility-LLM: Learning Visiting Intentions and Travel Preference from Human Mobility Data with Large Language Models. [Paper](https://openreview.net/forum?id=0feJEykDRx), [Poster](https://neurips.cc/virtual/2024/poster/96914)
 - Authors: Letian Gong\*, **Yan Lin**\*, Xinyue Zhang, Yiwen Lu, Xuedi Han, Yichen Liu, Shengnan Guo, Youfang Lin, Huaiyu Wan
 - Conference: NeurIPS, 2024.
 

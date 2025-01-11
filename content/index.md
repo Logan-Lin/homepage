@@ -91,7 +91,7 @@ I am currently a postdoctoral researcher in the Department of Computer Science a
 - Authors: **Yan Lin**, Huaiyu Wan, Shengnan Guo, Jilin Hu, Christian S. Jensen, Youfang Lin
 - Journal: IEEE TKDE, DOI: 10.1109/TKDE.2023.3347513, 2023.
 
-[[UniTE]]: A Survey and Unified Pipeline for Pre-training Spatiotemporal Trajectory Embeddings. [Preprint](https://arxiv.org/abs/2407.12550), [Code](https://github.com/Logan-Lin/UniTE)
+[[UniTE]]: A Survey and Unified Pipeline for Pre-training Spatiotemporal Trajectory Embeddings. [Paper](https://ieeexplore.ieee.org/document/10818577), [Preprint](https://arxiv.org/abs/2407.12550), [Code](https://github.com/Logan-Lin/UniTE)
 - Authors: **Yan Lin**, Zeyu Zhou, Yicheng Liu, Haochen Lv, Haomin Wen, Tianyi Li, Yushuai Li, Christian S. Jensen, Shengnan Guo, Youfang Lin, Huaiyu Wan
 - Journal: IEEE TKDE, 2024
 
@@ -111,7 +111,7 @@ I am currently a postdoctoral researcher in the Department of Computer Science a
 - Authors: Tonglong Wei, Youfang Lin, Shengnan Guo, **Yan Lin**, Yiheng Huang, Chenyang Xiang, Yuqing Bai, Menglu Ya, Huaiyu Wan
 - Journal: IEEE TKDE, DOI: 10.1109/TKDE.2024.3460051, 2024.
 
-[[STCDM]]: Spatio-Temporal Contrastive Diffusion Model for Check-in Sequence Generation.
+[[STCDM]]: Spatio-Temporal Contrastive Diffusion Model for Check-in Sequence Generation. [Paper](https://ieeexplore.ieee.org/document/10836764)
 - Authors: Letian Gong, Shengnan Guo, **Yan Lin**, Yichen Liu, Erwen Zheng, Yiwei Shuang, Youfang Lin, Jilin Hu, Huaiyu Wan
 - Journal: IEEE TKDE, 2024
 

@@ -3,7 +3,7 @@ title:
 ---
 > Topic: [[Spatiotemporal Data Mining]]
 
-[[STCDM]]: Spatio-Temporal Contrastive Diffusion Model for Check-in Sequence Generation.
+[[STCDM]]: Spatio-Temporal Contrastive Diffusion Model for Check-in Sequence Generation. [Paper](https://ieeexplore.ieee.org/document/10836764)
 - Authors: Letian Gong, Shengnan Guo, **Yan Lin**, Yichen Liu, Erwen Zheng, Yiwei Shuang, Youfang Lin, Jilin Hu, Huaiyu Wan
 - Journal: IEEE TKDE, 2024
 

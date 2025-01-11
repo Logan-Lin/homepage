@@ -4,7 +4,7 @@ title:
 
 > Topic: [[Spatiotemporal Data Mining]], [[Trajectory Data Mining]], [[Representation Learning]]
 
-[[UniTE]]: A Survey and Unified Pipeline for Pre-training Spatiotemporal Trajectory Embeddings. [Preprint](https://arxiv.org/abs/2407.12550), [Code](https://github.com/Logan-Lin/UniTE)
+UniTE: A Survey and Unified Pipeline for Pre-training Spatiotemporal Trajectory Embeddings. [Paper](https://ieeexplore.ieee.org/document/10818577), [Preprint](https://arxiv.org/abs/2407.12550), [Code](https://github.com/Logan-Lin/UniTE)
 - Authors: **Yan Lin**, Zeyu Zhou, Yicheng Liu, Haochen Lv, Haomin Wen, Tianyi Li, Yushuai Li, Christian S. Jensen, Shengnan Guo, Youfang Lin, Huaiyu Wan
 - Journal: IEEE TKDE, 2024
 

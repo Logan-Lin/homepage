@@ -1,0 +1,15 @@
+services:
+  homepage:
+    image: nginx:alpine
+    container_name: homepage
+    ports:
+      - "9000:80"
+    volumes:
+      - ./dist:/usr/share/nginx/html
+    restart: unless-stopped 
+    networks:
+      - proxy-network
+
+networks:
+  proxy-network:
+    external: true

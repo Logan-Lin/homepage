@@ -1,0 +1,113 @@
+{% extends 'base.html' %}
+
+{% block title %}Yan Lin's Homepage{% endblock %}
+
+{% block navigation %}
+  {% include 'partials/navigation.html' %}
+{% endblock %}
+
+{% block content %}
+  <div class="row g-0 border rounded text-body-emphasis bg-body-secondary flex-md-row my-4 position-relative shadow-sm transition-shadow" style="transition: box-shadow 0.2s ease-in-out;" onmouseover="this.classList.remove('shadow-sm'); this.classList.add('shadow')" onmouseout="this.classList.remove('shadow'); this.classList.add('shadow-sm')">
+    <div class="col p-4 d-flex flex-column position-static">
+      <h2 class="fst-italic mb-3">Biography - Yan Lin</h2>
+      <p class="card-text mb-auto" style="font-size: 1.1rem;">
+        I am currently a postdoctoral researcher in the Department of Computer Science at Aalborg University.
+        I received my PhD and Bachelor's degrees from Beijing Jiaotong University, China.
+        My research interests include <i>spatiotemporal data mining</i>, <i>representation learning</i>, and <i>AI for science</i>.
+      </p>
+    </div>
+    <div class="col-5 col-xl-4 col-xxl-3 d-none d-lg-block d-flex align-items-center">
+      <img src="/profile.webp" alt="Yan Lin" class="rounded w-100" style="object-fit: contain;">
+    </div>
+  </div>
+
+  <article class="section" id="publications">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+      <h2 class="section-title d-inline-block mb-0"><i class="bi bi-book"></i> Publications</h2>
+      <a class="mb-0 link link-secondary link-underline-opacity-0 h5" href="/publications/">View All <i class="bi bi-arrow-right-circle"></i></a>
+    </div>
+    <div>
+      <div id="primary-publications" class="list-group list-group-flush">
+        {% for pub in data.primaryPublications[:10] %}
+          {% with type='primary' %}
+            {% include 'partials/publication.html' %}
+          {% endwith %}
+        {% endfor %}
+      </div>
+      <hr class="my-2">
+      <div id="secondary-publications" class="list-group list-group-flush">
+        {% for pub in data.secondaryPublications[:10] %}
+          {% with type='secondary' %}
+            {% include 'partials/publication.html' %}
+          {% endwith %}
+        {% endfor %}
+      </div>
+    </div>
+    <div class="text-start mt-1">
+      <small class="text-muted" style="font-size: 0.8rem;">* Equal Contribution</small>
+    </div>
+  </article>
+
+  <article class="section" id="projects">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+      <h2 class="section-title d-inline-block mb-0"><i class="bi bi-code-slash"></i> Projects</h2>
+      <a class="mb-0 link link-secondary link-underline-opacity-0 h5" href="/projects/">View All <i class="bi bi-arrow-right-circle"></i></a>
+    </div>
+    <div>
+      <div id="primary-projects" class="list-group list-group-flush">
+        {% for project in data.primaryProjects[:3] %}
+          {% with type='primary' %}
+            {% include 'partials/project.html' %}
+          {% endwith %}
+        {% endfor %}
+      </div>
+      <hr class="my-2">
+      <div id="secondary-projects" class="list-group list-group-flush">
+        {% for project in data.secondaryProjects[:3] %}
+          {% with type='secondary' %}
+            {% include 'partials/project.html' %}
+          {% endwith %}
+        {% endfor %}
+      </div>
+    </div>
+  </article>
+
+  <article class="section" id="presentations">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+      <h2 class="section-title d-inline-block mb-0"><i class="bi bi-easel"></i> Presentations</h2>
+      <a class="mb-0 link link-secondary link-underline-opacity-0 h5" href="/presentations/">View All <i class="bi bi-arrow-right-circle"></i></a>
+    </div>
+    <div class="list-group list-group-flush" id="presentation-list">
+      {% for presentation in data.presentations[:5] %}
+        {% include 'partials/presentation.html' %}
+      {% endfor %}
+    </div>
+  </article>
+
+  <article id="services" class="rounded text-body-emphasis bg-body-secondary flex-md-row my-4 position-relative p-4 transition-shadow" style="transition: box-shadow 0.2s ease-in-out;" onmouseover="this.classList.add('shadow-sm')" onmouseout="this.classList.remove('shadow-sm')">
+    <h2 class="mb-3"><i class="bi bi-person-lines-fill"></i> Services</h2>
+    <div id="service-list">
+      <ul class="list ps-3">
+        {% for service in data.services %}
+          <li>{{ service }}</li>
+        {% endfor %}
+      </ul>
+    </div>
+  </article>
+
+  <article class="section" id="blog">
+    <div class="d-flex justify-content-between align-items-center mb-1">
+      <h2 class="section-title d-inline-block mb-0"><i class="bi bi-newspaper"></i> Blog</h2>
+      <a class="mb-0 link link-secondary link-underline-opacity-0 h5" href="/blog/">View All <i class="bi bi-arrow-right-circle"></i></a>
+    </div>
+    <div class="list-group list-group-flush" id="blog-list">
+      {% for blog in data.blogs[:3] %}
+        {% include 'partials/blog.html' %}
+      {% endfor %}
+    </div>
+  </article>
+{% endblock %}
+
+{% block extra_js %}
+  {{ super() }}
+{% endblock %} 

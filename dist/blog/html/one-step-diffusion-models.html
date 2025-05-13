@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yan Lin's Blog - One Step Diffusion Models</title>
+  <link rel="icon" href="/logo.webp" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/index.css">
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processHtmlClass: 'arithmatex'
+      }
+    };
+  </script>
+  <style>
+    a {
+      font-family: 'Lato', sans-serif;
+    }
+
+    img, .figure {
+      max-width: min(100%, 800px);
+      height: auto;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .blog-title {
+      font-size: calc(1.35rem + 0.9vw);
+      font-weight: bold;
+    }
+    
+    h1 {
+      font-size: calc(1.35rem + 0.6vw);
+      margin-top: 2rem;
+    }
+    
+    h2 {
+      font-size: calc(1.1rem + 0.4vw);
+      margin-top: 1.5rem;
+    }
+    
+    h3 {
+      font-size: calc(0.95rem + 0.1vw);
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="border-bottom lh-1 py-3 border-secondary">
+      <div class="row flex-nowrap justify-content-between align-items-center">
+        <div class="col-2">
+          <a class="link-secondary header-icon px-2 h4" href="/"><i class="bi bi-house-fill"></i></a>
+        </div>
+        <div class="col-8 text-center">
+          <div class="page-header-logo h2 m-0 fw-bold" style="font-family: 'Abril Fatface', serif;">Yan Lin's Blog</div>
+        </div>
+        <div class="col-2 text-end">
+          <a class="link-secondary header-icon px-2 h4" href="/blog"><i class="bi bi-list-task"></i></a>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <main class="container">
+    <article class="section col-xl-10 col-xxl-9 mx-auto">
+      <p class="blog-title">One Step Diffusion Models</p>
+<p><p>Despite the promising performance of diffusion models on continuous modality generation, one deficiency that is holding them back is their requirement for multi-step denoising processes, which can be computationally expensive. In this article, we examine recent works that aim to build diffusion models capable of performing sampling in one or a few steps.</p>
+<hr />
+<h1>Background</h1>
+<p>Diffusion models (DMs), or more broadly speaking, score-matching generative models, have become the de facto framework for building deep generation models. They demonstrate exceptional generation performance, especially on continuous modalities including images, videos, audios, and spatiotemporal data.</p>
+<p>Most diffusion models work by coupling a forward diffusion process and a reverse denoising diffusion process. The forward diffusion process gradually adds noise to the ground truth clean data <span class="arithmatex">\(X_0\)</span>, until noisy data <span class="arithmatex">\(X_T\)</span> that follows a relatively simple distribution is reached. The reverse denoising diffusion process starts from the noisy data <span class="arithmatex">\(X_T\)</span>, and removes the noise component step-by-step until clean generated data <span class="arithmatex">\(X_0\)</span> is reached. The reverse process is essentially a Monte-Carlo process, meaning it cannot be parallelized for each generation, which can be inefficient for a process with a large number of steps.</p>
+<figure class="figure">
+  <img alt="image-20250503125941212" src="/blog/md/one-step-diffusion-models.assets/image-20250503125941212.png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">The two processes in a typical diffusion model. <em>Source: Ho, Jain, and Abbeel, “Denoising Diffusion Probabilistic Models.”</em></figcaption>
+</figure>
+<h2>Understanding DMs</h2>
+<p>There are many ways to understand how Diffusion Models (DMs) work. One of the most common and intuitive approaches is that a DM learns an ordinary differential equation (ODE) that transforms noise into data. Imagine an ODE vector field between the noise <span class="arithmatex">\(X_T\)</span> and clean data <span class="arithmatex">\(X_0\)</span>. By training on sufficiently large numbers of timesteps <span class="arithmatex">\(t\in [0,T]\)</span>, a DM is able to learn the vector (tangent) towards the cleaner data <span class="arithmatex">\(X_{t-\Delta t}\)</span>, given any specific timestep <span class="arithmatex">\(t\)</span> and the corresponding noisy data <span class="arithmatex">\(X_t\)</span>. This idea is easy to illustrate in a simplified 1-dimensional data scenario.</p>
+<figure class="figure">
+  <img alt="image-20250503132738122" src="/blog/md/one-step-diffusion-models.assets/image-20250503132738122.png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">Illustrated ODE flow of a diffusion model on 1-dimensional data. <em>Source: Song et al., “Score-Based Generative Modeling through Stochastic Differential Equations.”</em> It should be noted that as the figure suggests, there are differences between ODEs and DMs in a narrow sense. Flow matching models, a variant of DMs, more closely resemble ODEs.</figcaption>
+</figure>
+<h2>DMs Scale Poorly with Few Steps</h2>
+<p>Vanilla DDPM, which is essentially a discrete-timestep DM, can only perform the reverse process using the same number of steps it is trained on, typically thousands. DDIM introduces a reparameterization scheme that enables skipping steps during the reverse process of DDPM. Continuous-timestep DMs like Stochastic Differential Equations (SDE) naturally possess the capability of using fewer steps in the reverse process compared to the forward process/training.</p>
+<blockquote>
+<p>Ho, Jain, and Abbeel, “Denoising Diffusion Probabilistic Models.”
+Song, Meng, and Ermon, “Denoising Diffusion Implicit Models.”
+Song et al., “Score-Based Generative Modeling through Stochastic Differential Equations.”</p>
+</blockquote>
+<p>Nevertheless, it is observed that their performance typically suffers catastrophic degradation when reducing the number of reverse process steps to single digits.</p>
+<figure class="figure">
+  <img alt="image-20250503135351246" src="/blog/md/one-step-diffusion-models.assets/image-20250503135351246.png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">Images generated by conventional DMs with only a few steps of reverse process. <em>Source: Frans et al., “One Step Diffusion via Shortcut Models.”</em></figcaption>
+</figure>
+<p>To understand why DMs scale poorly with few reverse process steps, we can return to the ODE vector field perspective of DMs. When the target data distribution is complex, the vector field typically contains numerous intersections. When a given <span class="arithmatex">\(X_t\)</span> and <span class="arithmatex">\(t\)</span> is at these intersections, the vector points to the averaged direction of all candidates. This causes the generated data to approach the mean of the training data when only a few reverse process steps are used. Another explanation is that the learned vector field is highly curved. Using only a few reverse process steps means attempting to approximate these curves with polylines, which is inherently difficult.</p>
+<figure class="figure">
+  <img alt="image-20250503141422791" src="/blog/md/one-step-diffusion-models.assets/image-20250503141422791.png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">Illustration of the why DMs scale poorly with few reverse process steps. <em>Source: Frans et al., “One Step Diffusion via Shortcut Models.”</em></figcaption>
+</figure>
+<p>We will introduce two branches of methods that aim to scale DMs to few or even reverse process steps: <strong>distillation-based</strong>, which distillates a pre-trained DM into a one-step model; and <strong>end-to-end-based</strong>, which trains a one-step DM from scratch.</p>
+<h1>Distallation</h1>
+<p>Distillation-based methods are also called <strong>rectified flow</strong> methods. Their idea follows the above insight of "curved ODE vector field": if the curved vectors (flows) are hindering the scaling of reverse process steps, can we try to straighten these vectors so that they are easy to approximate with polylines or even straight lines?</p>
+<p><em>Liu, Gong, and Liu, "Flow Straight and Fast"</em> implements this idea, focusing on learning an ODE that follows straight vectors as much as possible. In the context of continuous time DMs where <span class="arithmatex">\(T=1\)</span> and and <span class="arithmatex">\(t\in[0,1]\)</span>, suppose the clean data <span class="arithmatex">\(X_0\)</span> and noise <span class="arithmatex">\(X_1\)</span> each follows a data distribution, <span class="arithmatex">\(X_0\sim \pi_0\)</span> and <span class="arithmatex">\(X_1\sim \pi_1\)</span>. The "straight vectors" can be achieved by solving a nonlinear least squares optimization problem:
+$$
+\min_{v} \int_{0}^{1} \mathbb{E}\left[\left|\left(X_{1}-X_{0}\right)-v\left(X_{t}, t\right)\right|^{2}\right] \mathrm{d} t,
+$$</p>
+<div class="arithmatex">\[
+\quad X_{t}=t X_{1}+(1-t) X_{0}
+\]</div>
+<p>Where <span class="arithmatex">\(v\)</span> is the vector field of the ODE <span class="arithmatex">\(dZ_t = v(Z_t,t)dt\)</span>.</p>
+<p>Though straightforward, when the clean data distribution <span class="arithmatex">\(\pi_0\)</span> is very complicated, the ideal result of completely straight vectors can be hard to achieve. To address this, a "reflow" procedure is introduced. This procedure iteratively trains new rectified flows using data generated by previously obtained flows:
+$$
+Z^{(k+1)} = RectFlow((Z_0^k, Z_1^k))
+$$
+This procedure produces increasingly straight flows that can be simulated with very few steps, ideally one step after several iterations.</p>
+<figure class="figure">
+  <img alt="image-20250504142749208" src="/blog/md/one-step-diffusion-models.assets/image-20250504142749208.png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">Illustrations of vector fields after different times of reflow processes. <em>Source: Liu, Gong, and Liu, “Flow Straight and Fast.”</em></figcaption>
+</figure>
+<p>In practice, distillation-based methods are usually trained in two stages: first train a normal DM, and later distill one-step capabilities into it. This introduces additional computational overhead and complexity.</p>
+<h1>End-to-end</h1>
+<p>Compared to distillation-based methods, end-to-end-based methods train a one-step-capable diffusion model (DM) within a single training run. Various techniques are used to implement such methods. We will focus on two of them: <strong>consistency models</strong> and <strong>shortcut models</strong>.</p>
+<h2>Consistency Models</h2>
+<p>In discrete-timestep diffusion models (DMs), three components in the reverse denoising diffusion process are interchangeable through reparameterization: the noise component <span class="arithmatex">\(\epsilon_t\)</span> to remove, the less noisy previous step <span class="arithmatex">\(x_{t-1}\)</span>, and the predicted clean sample <span class="arithmatex">\(x_0\)</span>. This interchangeability is enabled by the following equation:
+$$
+x_t = \sqrt{\bar{\alpha}_t} \, x_0 + \sqrt{1 - \bar{\alpha}_t} \, \epsilon_t
+$$
+In theory, without altering the fundamental formulation of DMs, the learnable denoiser network can be designed to predict any of these three components. Consistency models (CMs) follow this principle by training the denoiser to specifically predict the clean sample <span class="arithmatex">\(x_0\)</span>. The benefit of this approach is that CMs can naturally scale to perform the reverse process with few steps or even a single step.</p>
+<figure class="figure">
+  <img alt="image-20250504161430743" src="/blog/md/one-step-diffusion-models.assets/image-20250504161430743.png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">A consistency model that learns to map any point on the ODE trajectory to the clean sample. <em>Source: Song et al., “Consistency Models.”</em></figcaption>
+</figure>
+<p>Formally, CMs learn a function <span class="arithmatex">\(f_\theta(x_t,t)\)</span> that maps noisy data <span class="arithmatex">\(x_t\)</span> at time <span class="arithmatex">\(t\)</span> directly to the clean data <span class="arithmatex">\(x_0\)</span>, satisfying:
+$$
+f_\theta(x_t, t) = f_\theta(x_{t'}, t') \quad \forall t, t'
+$$
+The model must also obey the differential consistency condition:
+$$
+\frac{d}{dt} f_\theta(x_t, t) = 0
+$$
+CMs are trained by minimizing the discrepancy between outputs at adjacent times, with the loss function:
+$$
+\mathcal{L} = \mathbb{E} \left[ d\left(f_\theta(x_t, t), f_\theta(x_{t'}, t')\right) \right]
+$$
+Similar to continuous-timestep DMs and discrete-timestep DMs, CMs also have continuous-time and discrete-time variants. Discrete-time CMs are easier to train, but are more sensitive to timestep scheduling and suffer from discretization errors. Continuous-time CMs, on the other hand, suffer from instability during training.</p>
+<p>For a deeper discussion of the differences between the two variants of CMs, and how to stabilize continuous-time CMs, please refer to <em>Lu and Song, "Simplifying, Stabilizing and Scaling Continuous-Time Consistency Models."</em></p>
+<h2>Shortcut Models</h2>
+<p>Similar to distillation-based methods, the core idea of shortcut models is inspired by the "curved vector field" problem, but the shortcut models take a different approach to solve it.</p>
+<p>Shortcut models are introduced in <em>Frans et al., "One Step Diffusion via Shortcut Models."</em> The paper presents the insight that conventional DMs perform badly when jumping with large step sizes stems from their lack of awareness of the step size they are set to jump forward. Since they are only trained to comply with small step sizes, they are only learning the tangents in the curved vector field, not the "correct direction" when a large step size is used.</p>
+<p>Based on this insight, on top of <span class="arithmatex">\(x_t\)</span> and <span class="arithmatex">\(t\)</span>, shortcut models additionally include step size <span class="arithmatex">\(d\)</span> as part of the condition for the denoiser network. At small step sizes (<span class="arithmatex">\(d\rightarrow 0\)</span>), the model behaves like a standard flow-matching model, learning the expected tangent from noise to data. For larger step sizes, the model learns that one large step should equal two consecutive smaller steps (self-consistency), creating a binary recursive formulation. The model is trained by combining the standard flow matching loss when <span class="arithmatex">\(d=0\)</span> and the self-consistency loss when <span class="arithmatex">\(d&gt;0\)</span>:
+$$
+\mathcal{L} = \mathbb{E} [ \underbrace{| s_\theta(x_t, t, 0) - (x_1 - x_0)|^2}_{\text{Flow-Matching}} +
+$$</p>
+<div class="arithmatex">\[
+\underbrace{\|s_\theta(x_t, t, 2d) - \mathbf{s}_{\text{target}}\|^2}_{\text{Self-Consistency}}],
+\]</div>
+<div class="arithmatex">\[
+\quad \mathbf{s}_{\text{target}} = s_\theta(x_t, t, d)/2 + s_\theta(x'_{t+d}, t + d, d)/2 \quad
+\]</div>
+<div class="arithmatex">\[
+\text{and} \quad x'_{t+d} = x_t + s_\theta(x_t, t, d)d
+\]</div>
+<figure class="figure">
+  <img alt="image-20250504180714955" src="/blog/md/one-step-diffusion-models.assets/image-20250504180714955.png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">Illustration of the training process of shortcut models. <em>Source: Frans et al., “One Step Diffusion via Shortcut Models.”</em></figcaption>
+</figure>
+<p>Both consistency models and shortcut models can be seamlessly scaled between one-step and multi-step generation to balance quality and efficiency.</p></p>
+    </article>
+    <p class="text-center text-secondary" style="font-size: 0.8rem; font-family: 'Lato', sans-serif;">Copyright © 2025. Designed and implemented by Yan Lin.</p>
+  </main>
+  <button id="back-to-top" class="btn btn-light rounded-circle" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000; width: 40px; height: 40px; padding: 0;"><i class="bi bi-chevron-up"></i></button>
+</body>
+
+</html>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('img').forEach(function(img) {
+      img.classList.add('figure-img', 'rounded');
+    });
+  });
+
+  // Show or hide the back-to-top button
+  window.addEventListener('scroll', function() {
+    var backToTopButton = document.getElementById('back-to-top');
+    if (window.scrollY > 100) {
+      backToTopButton.style.display = 'block';
+    } else {
+      backToTopButton.style.display = 'none';
+    }
+  });
+
+  // Scroll to top when the button is clicked
+  document.getElementById('back-to-top').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    window.location.href = '#';
+    return false;
+  });
+</script>

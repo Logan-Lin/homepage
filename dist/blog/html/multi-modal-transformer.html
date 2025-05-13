@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Yan Lin's Blog - Multi-modal and Multi-function Transformers</title>
+  <link rel="icon" href="/logo.webp" type="image/x-icon">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.7.2/font/bootstrap-icons.css" rel="stylesheet">
+  <link rel="stylesheet" href="/index.css">
+  <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+  <script>
+    MathJax = {
+      tex: {
+        inlineMath: [['$', '$'], ['\\(', '\\)']],
+        displayMath: [['$$', '$$'], ['\\[', '\\]']]
+      },
+      options: {
+        skipHtmlTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+        processHtmlClass: 'arithmatex'
+      }
+    };
+  </script>
+  <style>
+    a {
+      font-family: 'Lato', sans-serif;
+    }
+
+    img, .figure {
+      max-width: min(100%, 800px);
+      height: auto;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .blog-title {
+      font-size: calc(1.35rem + 0.9vw);
+      font-weight: bold;
+    }
+    
+    h1 {
+      font-size: calc(1.35rem + 0.6vw);
+      margin-top: 2rem;
+    }
+    
+    h2 {
+      font-size: calc(1.1rem + 0.4vw);
+      margin-top: 1.5rem;
+    }
+    
+    h3 {
+      font-size: calc(0.95rem + 0.1vw);
+      font-weight: bold;
+      margin-top: 1rem;
+    }
+
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <header class="border-bottom lh-1 py-3 border-secondary">
+      <div class="row flex-nowrap justify-content-between align-items-center">
+        <div class="col-2">
+          <a class="link-secondary header-icon px-2 h4" href="/"><i class="bi bi-house-fill"></i></a>
+        </div>
+        <div class="col-8 text-center">
+          <div class="page-header-logo h2 m-0 fw-bold" style="font-family: 'Abril Fatface', serif;">Yan Lin's Blog</div>
+        </div>
+        <div class="col-2 text-end">
+          <a class="link-secondary header-icon px-2 h4" href="/blog"><i class="bi bi-list-task"></i></a>
+        </div>
+      </div>
+    </header>
+  </div>
+
+  <main class="container">
+    <article class="section col-xl-10 col-xxl-9 mx-auto">
+      <p class="blog-title">Multi-modal and Multi-function Transformers</p>
+<p><p>Transformers have gained immense popularity within deep learning and AI communities in recent years. Since their introduction in <em>Vaswani et al., "Attention Is All You Need"</em>, they have proven to be powerful sequential models across diverse domains, with thousands of variations and "improved versions." The rise of Large Language Models (LLMs), which largely use Transformers as their foundation, has led to another surge in research around this architecture. This trend has even led graph learning and Computer Vision (CV) communities to move beyond their established foundation models (i.e., GNNs and CNNs) and embrace Transformers. This explains the increasing prevalence of graph Transformers and image Transformers today.</p>
+<blockquote>
+<p>Han et al., “A Survey on Vision Transformer”; Khan et al., “Transformers in Vision”; Yun et al., “Graph Transformer Networks.”</p>
+</blockquote>
+<p>Beyond "chasing the trend," using Transformer as a unified foundation model offers several advantages:</p>
+<ul>
+<li>Transformers excel at capturing long-term dependencies. Unlike GNNs and CNNs which require deeper network structures for longer context, Transformers natively support global dependency modeling through their self-attention mechanism. They also avoid global smoothing and vanishing gradient problems that hinder context length scaling in other network architectures.</li>
+<li>Transformers process sequences in parallel rather than sequentially, enabling full utilization of GPU acceleration. This advantage can be further enhanced with techniques like those described in <em>Dao et al., "FlashAttention."</em></li>
+<li>Transformers are flexible network structures. They don't inherently enforce sequentiality—without positional encoding, the ordering of input steps to Transformers is equivalent. Through strategic permutation and positional encoding, Transformers can adapt to a wide range of structured and unstructured data.</li>
+<li>The development of LLMs has made many open-weight Transformer models available with strong natural language understanding capabilities. These Transformers can be prompted and fine-tuned to model other modalities such as spatiotemporal data and images while retaining their language modeling abilities, creating opportunities for developing multi-modal foundation models.</li>
+<li>From a practical perspective, using Transformer as a foundation allows reuse of technical infrastructure and optimizations developed over years, including efficient architecture designs, training pipelines, and specialized hardware.</li>
+</ul>
+<p>In this article, we will briefly explore techniques for unifying multiple modalities (e.g., natural language and images) and multiple functionalities (e.g., language models and diffusion denoisers) within a single Transformer. These techniques are largely sourced from recent oral papers presented at ICML, ICLR, and CVPR conferences. I assume readers have general knowledge of basic concepts in ML and neural networks, Transformers, LLMs, and diffusion models.</p>
+<p>Since images and language modalities represent continuous and discrete data respectively, we will use them as examples throughout this article. Keep in mind that the techniques introduced can be readily extended to other modalities, including spatiotemporal data.</p>
+<h1>General Goal</h1>
+<p>The goal of a multi-modal Transformer is to create a model that can accept multi-modal inputs and produce multi-modal outputs. For example, instead of using a CNN-based image encoder and a Transformer-based language encoder to map image and language modalities to the latent space separately, a multi-modal Transformer would be able to process the combination of image and language (sentence) as a single sequence.</p>
+<figure class="figure">
+  <img alt="image" src="/blog/md/multi-modal-transformer.assets/image.png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">An example of “conventional” multi-modal fusion. Different modality is processed by separate models and fused at some point. Source: <em>Xiang, Hao, Runsheng Xu, and Jiaqi Ma. "HM-ViT: Hetero-modal vehicle-to-vehicle cooperative perception with vision transformer." CVPR, 2023.</em></figcaption>
+</figure>
+<figure class="figure">
+  <img alt="image (1)" src="/blog/md/multi-modal-transformer.assets/image (1).png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">An example of a Transformer that can handle multi-modal inputs and outputs. Different modalities are all projected into tokens and subsequently processed by a unified Transformer encoder. Source: <em>Kondratyuk, Dan, Lijun Yu, et al. “VideoPoet: A Large Language Model for Zero-Shot Video Generation,” ICML, 2024.</em></figcaption>
+</figure>
+<p>Beyond multi-modal processing, a multi-function Transformer can, for example, function as both a language model (auto-regressive generation) and diffusion denoiser (score-matching generation) simultaneously, supporting two of the most common generation schemes used today.</p>
+<h1>Modality Embedding</h1>
+<p>A fundamental challenge in unifying multiple modalities within a single Transformer is how to represent different modalities in the same embedding space. For the "QKV" self-attention mechanism to work properly, each item in the input sequence must be represented by an embedding vector of the same dimension, matching the "model dimension" of the Transformer.</p>
+<figure class="figure">
+  <img alt="image (2)" src="/blog/md/multi-modal-transformer.assets/image (2).png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">Illustration of the QKV self-attention mechanism in Transformer. <a href="https://en.wikipedia.org/wiki/Attention_(machine_learning)" class="link" target="_blank">Source</a></figcaption>
+</figure>
+<p>The most common method for mapping language into the embedding space is through tokenization and token embedding. A tokenizer maps a word or word fragment into a discrete token index, and an index-fetching embedding layer (implemented in frameworks like PyTorch with <code>nn.Embedding</code>) maps this index into a fixed-dimension embedding vector. In principle, all discrete features can be mapped into the embedding space using this approach.</p>
+<figure class="figure">
+  <img alt="1_Dk1X5rmLomXqqTPeuHgBpw" src="/blog/md/multi-modal-transformer.assets/1_Dk1X5rmLomXqqTPeuHgBpw.png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">Visualization of tokenizer and index-fetching embedding layer. <a href="https://medium.com/@hunter-j-phillips/the-embedding-layer-27d9c980d124" class="link" target="_blank">Source</a></figcaption>
+</figure>
+<h2>Vector Quantization</h2>
+<p>For continuous features, one intuitive approach is to first tokenize them into discrete tokens, thereby unifying the embedding process across both discrete and continuous features. <strong>Vector quantization</strong>, introduced in VQ-VAE, is one of the most common methods for this purpose.</p>
+<blockquote>
+<p>Van Den Oord, Aaron, and Oriol Vinyals. "Neural discrete representation learning." NeurIPS, 2017.</p>
+</blockquote>
+<p>Vector quantization maintains a "codebook" <span class="arithmatex">\(\boldsymbol C \in \mathbb R^{n\times d}\)</span>, which functions similarly to the index-fetching embedding layer, where <span class="arithmatex">\(n\)</span> is the total number of unique tokens, and <span class="arithmatex">\(d\)</span> is the embedding size. A given continuous vector <span class="arithmatex">\(\boldsymbol{z}\in\mathbb R^{d}\)</span> is quantized into a discrete value <span class="arithmatex">\(i\in\mathbb [0,n-1]\)</span> by finding the closest row vector in <span class="arithmatex">\(\boldsymbol C\)</span> to <span class="arithmatex">\(\boldsymbol{z}\)</span>, and that row vector <span class="arithmatex">\(\boldsymbol C_i\)</span> is fetched as the embedding for <span class="arithmatex">\(\boldsymbol{z}\)</span>. Formally:
+$$
+i = \arg\min_j ||\boldsymbol z - \boldsymbol C_j||₂
+$$
+<img alt="Screen_Shot_2020-06-28_at_4.26.40_PM" src="/blog/md/multi-modal-transformer.assets/Screen_Shot_2020-06-28_at_4.26.40_PM.png" /></p>
+<h2>Lookup-Free Quantization</h2>
+<p>A significant limitation of vector quantization is that it requires calculating distances between the given continuous vectors and the entire codebook, which becomes computationally expensive for large-scale codebooks. This creates tension with the need for expanded codebooks to represent complex modalities such as images and videos. Research has shown that simply increasing the number of unique tokens doesn't always improve codebook performance.</p>
+<blockquote>
+<p>“A simple trick for training a larger codebook involves decreasing the code embedding dimension when increasing the vocabulary size.” Source: <em>Yu, Lijun, Jose Lezama, et al. “Language Model Beats Diffusion - Tokenizer Is Key to Visual Generation,” ICLR, 2024.</em></p>
+</blockquote>
+<p>Building on this insight, <strong>Lookup-Free Quantization</strong> (LFQ) eliminates the embedding dimension of codebooks (essentially reducing the embedding dimension to 0) and directly calculates the discrete index <span class="arithmatex">\(i\)</span> by individually quantizing each dimension of <span class="arithmatex">\(\boldsymbol z\)</span> into a binary digit. The index <span class="arithmatex">\(i\)</span> can then be computed by converting the binary representation to decimal. Formally:
+$$
+i=\sum_{j=1}^{d} 2^{(j-1)}\cdot 𝟙(z_j &gt; 0)
+$$</p>
+<blockquote>
+<p>For example, given a continuous vector <span class="arithmatex">\(\boldsymbol z=\langle -0.52, 1.50, 0.53, -1.32\rangle\)</span>, we first quantize each dimension into <span class="arithmatex">\(\langle 0, 1, 1, 0\rangle\)</span>, based on the sign of each dimension. The token index of <span class="arithmatex">\(\boldsymbol z\)</span> is simply the decimal equivalent of the binary 0110, which is 6.</p>
+</blockquote>
+<p>However, this approach introduces another challenge: we still need an index-fetching embedding layer to map these token indices into embedding vectors for the Transformer. This, combined with the typically large number of unique tokens when using LFQ—a 32-dimensional <span class="arithmatex">\(\boldsymbol z\)</span> will result in <span class="arithmatex">\(2^{32}=4,294,967,296\)</span> unique tokens—creates significant efficiency problems. One solution is to factorize the token space. Effectively, this means splitting the binary digits into multiple parts, embedding each part separately, and concatenating the resulting embedding vectors. For example, with a 32-dimensional <span class="arithmatex">\(\boldsymbol z\)</span>, if we quantize and embed its first and last 16 dimensions separately, we “only” need to handle <span class="arithmatex">\(2^{16}*2= 131,072\)</span> unique tokens.</p>
+<p>Note that this section doesn't extensively explain how to map raw continuous features into the vector <span class="arithmatex">\(\boldsymbol{z}\)</span>, as these techniques are relatively straightforward and depend on the specific feature type—for example, fully-connected layers for numerical features, or CNN/GNN with feature flattening for structured data.</p>
+<h2>Quantization over Linear Projection</h2>
+<p>You might be asking—why can't we simply use linear projections to map the raw continuous features into the embedding space? What are the benefits of quantizing continuous features into discrete tokens?</p>
+<p>Although Transformers are regarded as universal sequential models, they were designed for discrete tokens in their first introduction in <em>Vaswani et al., "Attention Is All You Need"</em>. Empirically, they have optimal performance when dealing with tokens, compared to continuous features. This is supported by many research papers claiming that quantizing continuous features improves the performance of Transformers, and works demonstrating Transformers' subpar performance when applied directly to continuous features.</p>
+<blockquote>
+<p>Mao, Chengzhi, Lu Jiang, Mostafa Dehghani, Carl Vondrick, Rahul Sukthankar, and Irfan Essa. “Discrete Representations Strengthen Vision Transformer Robustness,” ICLR, 2022.</p>
+<p>Ilbert, Romain, Ambroise Odonnat, et al. “SAMformer: Unlocking the Potential of Transformers in Time Series Forecasting with Sharpness-Aware Minimization and Channel-Wise Attention,” ICML, 2024.</p>
+</blockquote>
+<p>On the other hand, unifying different modalities into tokens is especially beneficial in the context of Transformer-based "foundation models," since it preserves the auto-regressive next-token prediction architecture of LLMs. Combined with special tokens such as "start of sentence" and "end of sentence," the Transformer model is flexible in generating contents of mixed modalities with varied length.</p>
+<blockquote>
+<p>For example, by quantizing videos into discrete tokens and combining the token space of videos and language, one can create a unified Transformer model that generates both videos and language in one sequence. The start and end points of video and language sub-sequences are fully determined by the model, based on the specific input prompt. This structure would be difficult to replicate if we used tokenization for language but linear projection for videos.</p>
+</blockquote>
+<h1>Transformer Backbone</h1>
+<p>After different modalities are mapped into the same embedding space, they can be arranged into a sequence of embedding vectors and input into a Transformer backbone. We don't discuss the variations of Transformer structure and improvement techniques here, as they are numerous, and ultimately function similarly as sequential models.</p>
+<blockquote>
+<p>Lan et al., “ALBERT”; Ye et al., “Differential Transformer”; Kitaev, Kaiser, and Levskaya, “Reformer”; Su et al., “RoFormer”; Dai et al., “Transformer-XL.”</p>
+</blockquote>
+<p>As we know, the "full" Transformer structure proposed in <em>Vaswani et al., "Attention Is All You Need"</em> includes an encoder and a decoder. They perform self-attention within their respective input sequences, and the decoder additionally performs cross-attention between its input sequence and the memory sequence derived from the encoder's output. Some early language models use encoder-only structure (like <em>Devlin et al., "BERT"</em>) focused on outputting embedding vectors or encoder-decoder structure (like <em>Chung et al., "Scaling Instruction-Finetuned Language Models"</em>) for generating natural language output. Most modern large language models and foundation models use decoder-only structure (like <em>Brown et al., "Language Models Are Few-Shot Learners"</em>), focusing on auto-regressive generation of language output.</p>
+<p>The encoder-only structure theoretically excels at representation learning, and its produced embedding vectors can be applied to various downstream tasks. Recent developments have gradually moved towards decoder-only structure, centered around the idea of building models that are capable of directly generating the required final output of every downstream task.</p>
+<blockquote>
+<p>For example, to perform sentiment analysis, BERT will compute an embedding vector for the query sentence, and the embedding vector can be used in a dedicated classifier to predict the sentiment label. GPT, on the other hand, can directly answer the question "what is the sentiment associated with the query sentence?" Comparatively, GPT is more versatile in most cases and can easily perform zero-shot prediction.</p>
+</blockquote>
+<p>Nevertheless, representation learning is still a relevant topic. The general understanding is that decoder-only structure cannot perform conventional representation learning, for example mapping a sentence into a fixed-dimension embedding vector. Yet, there are a few works in the latest ICLR that shed light on the utilization of LLMs as representation learning or embedding models:</p>
+<blockquote>
+<p>Gao, Leo, Tom Dupre la Tour, Henk Tillman, Gabriel Goh, Rajan Troll, Alec Radford, Ilya Sutskever, Jan Leike, and Jeffrey Wu. “Scaling and Evaluating Sparse Autoencoders,” 2024. <a href="https://openreview.net/forum?id=tcsZt9ZNKD" class="link" target="_blank">Link</a></p>
+<p>Li, Ziyue, and Tianyi Zhou. “Your Mixture-of-Experts LLM Is Secretly an Embedding Model for Free,” 2024. <a href="https://openreview.net/forum?id=eFGQ97z5Cd" class="link" target="_blank">Link</a></p>
+<p>Zhang, Jie, Dongrui Liu, Chen Qian, Linfeng Zhang, Yong Liu, Yu Qiao, and Jing Shao. “REEF: Representation Encoding Fingerprints for Large Language Models,” 2024. <a href="https://openreview.net/forum?id=SnDmPkOJ0T" class="link" target="_blank">Link</a></p>
+</blockquote>
+<h1>Output Layer</h1>
+<p>For language generation, Transformers typically use classifier output layers, mapping the latent vector of each item in the output sequence back to tokens. As we've established in the "modality embedding" section, the optimal method to embed continuous features is to quantize them into discrete tokens. Correspondingly, an intuitive method to output continuous features is to map these discrete tokens back to the continuous feature space, essentially reversing the vector quantization process.</p>
+<h2>Reverse Vector Quantization</h2>
+<p>One approach to reverse vector quantization is readily available in VQ-VAE, since it is an auto-encoder. Given a token <span class="arithmatex">\(i\)</span>, we can look up its embedding in the codebook as <span class="arithmatex">\(\boldsymbol C_i\)</span>, then apply a decoder network to map <span class="arithmatex">\(\boldsymbol C_i\)</span> back to the continuous feature vector <span class="arithmatex">\(\boldsymbol z\)</span>. The decoder network can be pre-trained in the VQ-VAE framework—pre-train the VQ-VAE tokenizer, encoder, and decoder using auto-encoding loss functions, or end-to-end trained along with the whole Transformer. In the NLP and CV communities, the pre-training approach is more popular, since there are many large-scale pre-trained auto-encoders available.</p>
+<figure class="figure">
+  <img alt="image (4)" src="/blog/md/multi-modal-transformer.assets/image (4).png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">The encoder-decoder structure of MAGVIT (<em>Yu et al., “MAGVIT”</em>), a visual VQ-VAE model. A 3D-VQ encoder quantizes a video into discrete tokens, and a 3D-VQ decoder maps them back to the pixel space.</figcaption>
+</figure>
+<h2>Efficiency Enhancement</h2>
+<p>For continuous feature generation, unlike language generation where the output tokens are the final output, we are essentially representing the final output with a limited size token space. Thus, for complicated continuous features like images and videos, we have to expand the token space or use more tokens to represent one image or one video frame to improve generation quality, which can result in efficiency challenges.</p>
+<p>There are several workarounds to improve the efficiency of multi-modal outputs. One approach is to generate low-resolution outputs first, then use a separate super-resolution module to improve the quality of the output. This approach is explored in <em>Kondratyuk et al., "VideoPoet"</em> and <em>Tian et al., "Visual Autoregressive Modeling"</em>. Interestingly, the overall idea is very similar to nVidia's DLSS, where the graphics card renders a low-resolution frame (e.g., 1080p) using the conventional rasterization pipeline, then a super resolution model increases the frame's resolution (e.g., 4k) utilizing the graphics card's tensor hardware, improving games' overall frame rate.</p>
+<p>Another workaround follows the idea of compression. Take video generation as an example. The model generates full features for key frames, and light-weight features for motion vectors that describe subtle differences from those key frames. This is essentially how inter-frame compressed video codecs work, which takes advantage of temporal redundancy between neighboring frames.</p>
+<figure class="figure">
+  <img alt="image (5)" src="/blog/md/multi-modal-transformer.assets/image (5).png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">Keys frames and motion vectors used in <em>Jin et al., “Video-LaVIT.”</em></figcaption>
+</figure>
+<h1>Fuse with Diffusion Models</h1>
+<p>Despite continuous efforts to enable representation and generation of images and videos with a language model structure (auto-regressive), current research indicates that diffusion models (more broadly speaking, score-matching generative models) outperform language models on continuous feature generation. Score-matching generative models have their own separate and substantial community, with strong theoretical foundations and numerous variations emerging each year, such as stochastic differential equations, bayesian flow, and rectified flow. In conclusion, score-matching generative models are clearly here to stay alongside language models.</p>
+<p>An intriguing question arises: why not integrate the structures of language models and diffusion models into one Transformer to reach the best of both worlds? <em>Zhou et al. in "Transfusion"</em> explored this idea. The approach is straightforward: build a Transformer that can handle both language and image inputs and outputs. The language component functions as a language model, while the image component serves as a denoiser network for diffusion models. The model is trained by combining the language modeling loss and DDPM loss, enabling it to function either as a language model or a text-to-image denoiser.</p>
+<figure class="figure">
+  <img alt="image (6)" src="/blog/md/multi-modal-transformer.assets/image (6).png" / class="figure-img img-fluid rounded">
+  <figcaption class="figure-caption">A Transformer capable of function as a language model and a diffusion denoiser at the same time. Source: <em>Zhou, Chunting, Lili Yu, et al. “Transfusion: Predict the Next Token and Diffuse Images with One Multi-Modal Model,” ICLR, 2025.</em></figcaption>
+</figure>
+<h1>Conclusion</h1>
+<p>In conclusion, the evolution of Transformers into versatile foundation models capable of handling multiple modalities and functionalities represents a significant advancement in AI research. By enabling a single architecture to process diverse data types through techniques like vector quantization and lookup-free quantization, researchers have created models that can seamlessly integrate language, images, and other modalities within the same embedding space.</p>
+<p>In our research domain, we encounter even more diverse and domain-specific multi-modal data, such as traffic flows, trajectories, and real-world agent interactions. A unified Transformer for such data presents a promising solution for creating "foundation models" that generalize across diverse tasks and scenarios. However, domain-specific challenges, including data encoding and decoding, computational efficiency, and scalability, must be addressed to realize this potential.</p></p>
+    </article>
+    <p class="text-center text-secondary" style="font-size: 0.8rem; font-family: 'Lato', sans-serif;">Copyright © 2025. Designed and implemented by Yan Lin.</p>
+  </main>
+  <button id="back-to-top" class="btn btn-light rounded-circle" style="position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000; width: 40px; height: 40px; padding: 0;"><i class="bi bi-chevron-up"></i></button>
+</body>
+
+</html>
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('img').forEach(function(img) {
+      img.classList.add('figure-img', 'rounded');
+    });
+  });
+
+  // Show or hide the back-to-top button
+  window.addEventListener('scroll', function() {
+    var backToTopButton = document.getElementById('back-to-top');
+    if (window.scrollY > 100) {
+      backToTopButton.style.display = 'block';
+    } else {
+      backToTopButton.style.display = 'none';
+    }
+  });
+
+  // Scroll to top when the button is clicked
+  document.getElementById('back-to-top').addEventListener('click', function(e) {
+    e.preventDefault();
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    window.location.href = '#';
+    return false;
+  });
+</script>

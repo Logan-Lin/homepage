@@ -21,6 +21,21 @@
         processHtmlClass: 'arithmatex'
       }
     };
+
+    window.addEventListener('load', function() {
+      document.querySelectorAll('script[type^="math/tex"]').forEach(function(script) {
+        const isDisplay = script.type.includes('mode=display');
+        const math = script.textContent;
+        const span = document.createElement('span');
+        span.className = isDisplay ? 'mathjax-block' : 'mathjax-inline';
+        span.innerHTML = isDisplay ? `\\[${math}\\]` : `\\(${math}\\)`;
+        script.parentNode.replaceChild(span, script);
+      });
+        
+      if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+        MathJax.typesetPromise();
+      }
+    });
   </script>
   <style>
     a {
@@ -120,25 +135,26 @@
 <blockquote>
 <p>Van Den Oord, Aaron, and Oriol Vinyals. "Neural discrete representation learning." NeurIPS, 2017.</p>
 </blockquote>
-<p>Vector quantization maintains a "codebook" <span class="arithmatex">\(\boldsymbol C \in \mathbb R^{n\times d}\)</span>, which functions similarly to the index-fetching embedding layer, where <span class="arithmatex">\(n\)</span> is the total number of unique tokens, and <span class="arithmatex">\(d\)</span> is the embedding size. A given continuous vector <span class="arithmatex">\(\boldsymbol{z}\in\mathbb R^{d}\)</span> is quantized into a discrete value <span class="arithmatex">\(i\in\mathbb [0,n-1]\)</span> by finding the closest row vector in <span class="arithmatex">\(\boldsymbol C\)</span> to <span class="arithmatex">\(\boldsymbol{z}\)</span>, and that row vector <span class="arithmatex">\(\boldsymbol C_i\)</span> is fetched as the embedding for <span class="arithmatex">\(\boldsymbol{z}\)</span>. Formally:
-$$
+<p>Vector quantization maintains a "codebook" <script type="math/tex">\boldsymbol C \in \mathbb R^{n\times d}</script>, which functions similarly to the index-fetching embedding layer, where <script type="math/tex">n</script> is the total number of unique tokens, and <script type="math/tex">d</script> is the embedding size. A given continuous vector <script type="math/tex">\boldsymbol{z}\in\mathbb R^{d}</script> is quantized into a discrete value <script type="math/tex">i\in\mathbb [0,n-1]</script> by finding the closest row vector in <script type="math/tex">\boldsymbol C</script> to <script type="math/tex">\boldsymbol{z}</script>, and that row vector <script type="math/tex">\boldsymbol C_i</script> is fetched as the embedding for <script type="math/tex">\boldsymbol{z}</script>. Formally:
+<script type="math/tex; mode=display">
 i = \arg\min_j ||\boldsymbol z - \boldsymbol C_j||₂
-$$
+</script>
 <img alt="Screen_Shot_2020-06-28_at_4.26.40_PM" src="/blog/md/multi-modal-transformer.assets/Screen_Shot_2020-06-28_at_4.26.40_PM.png" /></p>
 <h2>Lookup-Free Quantization</h2>
 <p>A significant limitation of vector quantization is that it requires calculating distances between the given continuous vectors and the entire codebook, which becomes computationally expensive for large-scale codebooks. This creates tension with the need for expanded codebooks to represent complex modalities such as images and videos. Research has shown that simply increasing the number of unique tokens doesn't always improve codebook performance.</p>
 <blockquote>
 <p>“A simple trick for training a larger codebook involves decreasing the code embedding dimension when increasing the vocabulary size.” Source: <em>Yu, Lijun, Jose Lezama, et al. “Language Model Beats Diffusion - Tokenizer Is Key to Visual Generation,” ICLR, 2024.</em></p>
 </blockquote>
-<p>Building on this insight, <strong>Lookup-Free Quantization</strong> (LFQ) eliminates the embedding dimension of codebooks (essentially reducing the embedding dimension to 0) and directly calculates the discrete index <span class="arithmatex">\(i\)</span> by individually quantizing each dimension of <span class="arithmatex">\(\boldsymbol z\)</span> into a binary digit. The index <span class="arithmatex">\(i\)</span> can then be computed by converting the binary representation to decimal. Formally:
-$$
-i=\sum_{j=1}^{d} 2^{(j-1)}\cdot 𝟙(z_j &gt; 0)
-$$</p>
+<p>Building on this insight, <strong>Lookup-Free Quantization</strong> (LFQ) eliminates the embedding dimension of codebooks (essentially reducing the embedding dimension to 0) and directly calculates the discrete index <script type="math/tex">i</script> by individually quantizing each dimension of <script type="math/tex">\boldsymbol z</script> into a binary digit. The index <script type="math/tex">i</script> can then be computed by converting the binary representation to decimal. Formally:
+<script type="math/tex; mode=display">
+i=\sum_{j=1}^{d} 2^{(j-1)}\cdot 𝟙(z_j > 0)
+</script>
+</p>
 <blockquote>
-<p>For example, given a continuous vector <span class="arithmatex">\(\boldsymbol z=\langle -0.52, 1.50, 0.53, -1.32\rangle\)</span>, we first quantize each dimension into <span class="arithmatex">\(\langle 0, 1, 1, 0\rangle\)</span>, based on the sign of each dimension. The token index of <span class="arithmatex">\(\boldsymbol z\)</span> is simply the decimal equivalent of the binary 0110, which is 6.</p>
+<p>For example, given a continuous vector <script type="math/tex">\boldsymbol z=\langle -0.52, 1.50, 0.53, -1.32\rangle</script>, we first quantize each dimension into <script type="math/tex">\langle 0, 1, 1, 0\rangle</script>, based on the sign of each dimension. The token index of <script type="math/tex">\boldsymbol z</script> is simply the decimal equivalent of the binary 0110, which is 6.</p>
 </blockquote>
-<p>However, this approach introduces another challenge: we still need an index-fetching embedding layer to map these token indices into embedding vectors for the Transformer. This, combined with the typically large number of unique tokens when using LFQ—a 32-dimensional <span class="arithmatex">\(\boldsymbol z\)</span> will result in <span class="arithmatex">\(2^{32}=4,294,967,296\)</span> unique tokens—creates significant efficiency problems. One solution is to factorize the token space. Effectively, this means splitting the binary digits into multiple parts, embedding each part separately, and concatenating the resulting embedding vectors. For example, with a 32-dimensional <span class="arithmatex">\(\boldsymbol z\)</span>, if we quantize and embed its first and last 16 dimensions separately, we “only” need to handle <span class="arithmatex">\(2^{16}*2= 131,072\)</span> unique tokens.</p>
-<p>Note that this section doesn't extensively explain how to map raw continuous features into the vector <span class="arithmatex">\(\boldsymbol{z}\)</span>, as these techniques are relatively straightforward and depend on the specific feature type—for example, fully-connected layers for numerical features, or CNN/GNN with feature flattening for structured data.</p>
+<p>However, this approach introduces another challenge: we still need an index-fetching embedding layer to map these token indices into embedding vectors for the Transformer. This, combined with the typically large number of unique tokens when using LFQ—a 32-dimensional <script type="math/tex">\boldsymbol z</script> will result in <script type="math/tex">2^{32}=4,294,967,296</script> unique tokens—creates significant efficiency problems. One solution is to factorize the token space. Effectively, this means splitting the binary digits into multiple parts, embedding each part separately, and concatenating the resulting embedding vectors. For example, with a 32-dimensional <script type="math/tex">\boldsymbol z</script>, if we quantize and embed its first and last 16 dimensions separately, we “only” need to handle <script type="math/tex">2^{16}*2= 131,072</script> unique tokens.</p>
+<p>Note that this section doesn't extensively explain how to map raw continuous features into the vector <script type="math/tex">\boldsymbol{z}</script>, as these techniques are relatively straightforward and depend on the specific feature type—for example, fully-connected layers for numerical features, or CNN/GNN with feature flattening for structured data.</p>
 <h2>Quantization over Linear Projection</h2>
 <p>You might be asking—why can't we simply use linear projections to map the raw continuous features into the embedding space? What are the benefits of quantizing continuous features into discrete tokens?</p>
 <p>Although Transformers are regarded as universal sequential models, they were designed for discrete tokens in their first introduction in <em>Vaswani et al., "Attention Is All You Need"</em>. Empirically, they have optimal performance when dealing with tokens, compared to continuous features. This is supported by many research papers claiming that quantizing continuous features improves the performance of Transformers, and works demonstrating Transformers' subpar performance when applied directly to continuous features.</p>
@@ -169,7 +185,7 @@ $$</p>
 <h1>Output Layer</h1>
 <p>For language generation, Transformers typically use classifier output layers, mapping the latent vector of each item in the output sequence back to tokens. As we've established in the "modality embedding" section, the optimal method to embed continuous features is to quantize them into discrete tokens. Correspondingly, an intuitive method to output continuous features is to map these discrete tokens back to the continuous feature space, essentially reversing the vector quantization process.</p>
 <h2>Reverse Vector Quantization</h2>
-<p>One approach to reverse vector quantization is readily available in VQ-VAE, since it is an auto-encoder. Given a token <span class="arithmatex">\(i\)</span>, we can look up its embedding in the codebook as <span class="arithmatex">\(\boldsymbol C_i\)</span>, then apply a decoder network to map <span class="arithmatex">\(\boldsymbol C_i\)</span> back to the continuous feature vector <span class="arithmatex">\(\boldsymbol z\)</span>. The decoder network can be pre-trained in the VQ-VAE framework—pre-train the VQ-VAE tokenizer, encoder, and decoder using auto-encoding loss functions, or end-to-end trained along with the whole Transformer. In the NLP and CV communities, the pre-training approach is more popular, since there are many large-scale pre-trained auto-encoders available.</p>
+<p>One approach to reverse vector quantization is readily available in VQ-VAE, since it is an auto-encoder. Given a token <script type="math/tex">i</script>, we can look up its embedding in the codebook as <script type="math/tex">\boldsymbol C_i</script>, then apply a decoder network to map <script type="math/tex">\boldsymbol C_i</script> back to the continuous feature vector <script type="math/tex">\boldsymbol z</script>. The decoder network can be pre-trained in the VQ-VAE framework—pre-train the VQ-VAE tokenizer, encoder, and decoder using auto-encoding loss functions, or end-to-end trained along with the whole Transformer. In the NLP and CV communities, the pre-training approach is more popular, since there are many large-scale pre-trained auto-encoders available.</p>
 <figure class="figure">
   <img alt="image (4)" src="/blog/md/multi-modal-transformer.assets/image (4).png" / class="figure-img img-fluid rounded">
   <figcaption class="figure-caption">The encoder-decoder structure of MAGVIT (<em>Yu et al., “MAGVIT”</em>), a visual VQ-VAE model. A 3D-VQ encoder quantizes a video into discrete tokens, and a 3D-VQ decoder maps them back to the pixel space.</figcaption>

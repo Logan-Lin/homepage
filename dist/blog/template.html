@@ -21,6 +21,21 @@
         processHtmlClass: 'arithmatex'
       }
     };
+
+    window.addEventListener('load', function() {
+      document.querySelectorAll('script[type^="math/tex"]').forEach(function(script) {
+        const isDisplay = script.type.includes('mode=display');
+        const math = script.textContent;
+        const span = document.createElement('span');
+        span.className = isDisplay ? 'mathjax-block' : 'mathjax-inline';
+        span.innerHTML = isDisplay ? `\\[${math}\\]` : `\\(${math}\\)`;
+        script.parentNode.replaceChild(span, script);
+      });
+        
+      if (typeof MathJax !== 'undefined' && MathJax.typesetPromise) {
+        MathJax.typesetPromise();
+      }
+    });
   </script>
   <style>
     a {

@@ -84,6 +84,7 @@
   --primary-text: #58151c;
   --secondary-text: #052c65;
   --link-hover-color: #555;
+  --link-hover-color-rgb: 85, 85, 85;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -98,6 +99,7 @@
     --primary-text: #ffddb3;
     --secondary-text: #c6e2ff;
     --link-hover-color: #ddd;
+    --link-hover-color-rgb: 221, 221, 221;
   }
 }
 
@@ -173,7 +175,7 @@ main.container {
 }
 
 .blog-link {
-  color: var(--link-color);
+  color: var(--text-color);
 }
 
 .blog-link:hover {

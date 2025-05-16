@@ -16,10 +16,10 @@ pkgs.mkShell {
     fi
     source $VENV_PATH/bin/activate
     pip install -r requirements.txt
+    pip install watchdog
 
     python parser/md.py
     python generate.py
-    cd dist
-    python -m http.server 8000
+    python watch.py
   '';
 }

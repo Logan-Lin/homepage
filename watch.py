@@ -8,14 +8,18 @@ class ChangeHandler(FileSystemEventHandler):
     def on_modified(self, event):
         if event.is_directory:
             return
-        if any(event.src_path.endswith(ext) for ext in ['.md', '.py', '.html', '.css', '.js']):
+        if event.src_path.endswith('.html') and '/dist/' in event.src_path:
+            return
+        if any(event.src_path.endswith(ext) for ext in ['.md', '.py', '.html', '.css', '.js', '.yaml']):
             print(f"File {event.src_path} has been modified")
             self.regenerate()
     
     def on_created(self, event):
         if event.is_directory:
             return
-        if any(event.src_path.endswith(ext) for ext in ['.md', '.py', '.html', '.css', '.js']):
+        if event.src_path.endswith('.html') and '/dist/' in event.src_path:
+            return
+        if any(event.src_path.endswith(ext) for ext in ['.md', '.py', '.html', '.css', '.js', '.yaml']):
             print(f"File {event.src_path} has been created")
             self.regenerate()
     
@@ -28,8 +32,7 @@ class ChangeHandler(FileSystemEventHandler):
 if __name__ == "__main__":
     event_handler = ChangeHandler()
     observer = Observer()
-    # Watch both current directory and dist directory
-    observer.schedule(event_handler, "templates", recursive=True)
+    observer.schedule(event_handler, ".", recursive=True)
     observer.start()
     
     http_server = subprocess.Popen(["python", "-m", "http.server", "8000", "--directory", "dist"])

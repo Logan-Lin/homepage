@@ -27,8 +27,7 @@ pkgs.mkShell {
       pip install watchdog==6.0.0
       python watch.py && exit
     '' else ''
-      rsync -avP --delete ./dist/ ${remoteHost}:/root/homepage/dist
-      rsync -avP ./docker-compose.yml ${remoteHost}:/root/homepage/
+      rsync -avP --delete ./{dist,compose.yml} ${remoteHost}:/root/homepage/
 
       ${if restartRemote then ''
         ssh ${remoteHost} "cd /root/homepage && docker compose down && docker compose up -d"

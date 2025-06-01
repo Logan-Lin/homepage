@@ -13,16 +13,15 @@ pkgs.mkShell {
   in ''
     export PIP_REQUIRE_VIRTUALENV=1
     export VENV_PATH=${venvPath}
-    
+
     if [ ! -d $VENV_PATH ]; then
       python -m venv $VENV_PATH
     fi
     source $VENV_PATH/bin/activate
     pip install -r requirements.txt
 
-    python parser/md.py
     python generate.py
-    
+
     ${if isDev then ''
       pip install watchdog==6.0.0
       python watch.py && exit

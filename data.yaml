@@ -5,6 +5,7 @@ primaryPublications:
       - "IEEE TKDE"
       - "2025"
     links:
+      Paper: "https://ieeexplore.ieee.org/document/11004614"
       Preprint: "https://arxiv.org/abs/2402.07232"
       Code: "https://github.com/Logan-Lin/UVTM"
 
@@ -115,7 +116,7 @@ secondaryPublications:
     authors: "Letian Gong, Shengnan Guo, <strong>Yan Lin</strong>, Yichen Liu, Erwen Zheng, Yiwei Shuang, Youfang Lin, Jilin Hu, Huaiyu Wan"
     tags:
       - "IEEE TKDE"
-      - "2024" 
+      - "2024"
     links:
       Paper: "https://ieeexplore.ieee.org/document/10836764"
 
@@ -181,13 +182,13 @@ secondaryPublications:
       Code: "https://github.com/Water2sea/WITRAN"
 
 primaryProjects:
-  - title: 'Research on <i>Prediction of User Travel Destination and Travel Time Based on Trajectory Representation Learning</i>'
+  - title: "Research on <i>Prediction of User Travel Destination and Travel Time Based on Trajectory Representation Learning</i>"
     tags:
       - "Fundamental Research Funds for the Central Universities of China"
     desc: "Applies representation learning to trajectory data to transform original features into high-level information, improving the performance of downstream tasks such as travel time and destination prediction."
     links: {}
 
-  - title: 'Development of <i>OverleafCopilot - Empowering Academic Writing in Overleaf with Large Language Models</i>'
+  - title: "Development of <i>OverleafCopilot - Empowering Academic Writing in Overleaf with Large Language Models</i>"
     tags:
       - "Personal Interest Project"
     desc: "This project aims to develop a Browser extension to seamlessly integrate Large Language Models (such as ChatGPT) into the popular online academic writing platform, Overleaf."
@@ -195,7 +196,7 @@ primaryProjects:
       Home: "https://www.overleafcopilot.com/"
       Install: "https://chromewebstore.google.com/detail/overleaf-copilot/eoadabdpninlhkkbhngoddfjianhlghb"
 
-  - title: 'Development of <i>PromptGenius - All-purpose prompts for LLMs</i>'
+  - title: "Development of <i>PromptGenius - All-purpose prompts for LLMs</i>"
     tags:
       - "Personal Interest Project"
     desc: "This project focuses on developing a website that offers a wide range of prompt categories, enhancing the versatility of LLMs for various tasks and improving their output quality."
@@ -204,33 +205,33 @@ primaryProjects:
       Code: "https://github.com/wenhaomin/ChatGPT-PromptGenius"
 
 secondaryProjects:
-  - title: 'Research on <i>Inverse Design of Materials Using Diffusion Probabilistic Models</i>'
+  - title: "Research on <i>Inverse Design of Materials Using Diffusion Probabilistic Models</i>"
     tags:
       - "Villum Foundation"
     desc: "This project focuses on developing diffusion probabilistic models to first understand the relationship between chemistry/structure and material properties, then enable the inverse design of new materials with specific properties. This project currently supports my postdoctoral research position."
     links: {}
 
-  - title: 'Research on <i>Pre-training Representation Learning Methods of Spatial-temporal Trajectory Data for Traffic Prediction</i>'
+  - title: "Research on <i>Pre-training Representation Learning Methods of Spatial-temporal Trajectory Data for Traffic Prediction</i>"
     tags:
       - "National Natural Science Foundation of China"
     desc: "This project aims to propose pre-training representation learning methods for spatial-temporal trajectory data, modeling multiple features to improve traffic prediction tasks. It demonstrates how trajectory representation learning can enhance traffic data mining."
     links: {}
 
-  - title: 'Research on <i>Spatial-temporal Trajectory Generation and Representation Learning Methods for Sparsity Problems</i>'
+  - title: "Research on <i>Spatial-temporal Trajectory Generation and Representation Learning Methods for Sparsity Problems</i>"
     tags:
       - "National Natural Science Foundation of China"
     desc: "This project explores how to generate high-quality spatial-temporal trajectory data and corresponding representations to address sparsity-related issues, thereby supporting a variety of downstream tasks."
     links: {}
 
 presentations:
-  - title: 'Self-supervised Learning of Trajectory Data'
+  - title: "Self-supervised Learning of Trajectory Data"
     tags:
       - "Guest lecture"
       - "Aalborg University"
     links:
       Slides: "/assets/Self-supervised Learning of Trajectory Data.pdf"
 
-  - title: 'PLM4Traj: Leveraging Pre-trained Language Models for Cognizing Movement Patterns and Travel Purposes from Trajectories'
+  - title: "PLM4Traj: Leveraging Pre-trained Language Models for Cognizing Movement Patterns and Travel Purposes from Trajectories"
     tags:
       - "Workshop presentation"
       - "KDD 2024"
@@ -238,21 +239,21 @@ presentations:
       Slides: "/assets/KDD_2024_Workshop_PLM4Traj.pdf"
       Paper: "https://arxiv.org/abs/2405.12459"
 
-  - title: 'Origin-Destination Travel Time Oracle for Map-based Services'
+  - title: "Origin-Destination Travel Time Oracle for Map-based Services"
     tags:
       - "Paper Oral"
       - "SIGMOD 2024"
     links:
       Slides: "/assets/SIGMOD-Oral-PPT.pdf"
 
-  - title: 'Self-supervised Learning of Spatial-temporal Trajectories'
+  - title: "Self-supervised Learning of Spatial-temporal Trajectories"
     tags:
       - "Tutorial"
       - "SpatialDI 2024"
     links:
       Slides: "/assets/Talk on SpatialDI 2024.pdf"
 
-  - title: 'Pre-training Context and Time Aware Location Embeddings from Spatial-Temporal Trajectories for User Next Location Prediction'
+  - title: "Pre-training Context and Time Aware Location Embeddings from Spatial-Temporal Trajectories for User Next Location Prediction"
     tags:
       - "Paper Oral"
       - "AAAI 2021"
@@ -264,14 +265,3 @@ services:
   - "Secretary of IEEE (Denmark Section) Computer Society"
   - "Reviewer for journals including TIST, TII, and TVT"
   - "Member of program committees of KDD, ICLR, NeurIPS, AAAI, CVPR, ICCV, IJCAI, and WWW"
-
-blogs:
-  - title: "One Step Diffusion Models"
-    badge: "May 2025"
-    path: "one-step-diffusion-models"
-    tldr: "Despite the promising performance of diffusion models on continuous modality generation, one deficiency that is holding them back is their requirement for multi-step denoising processes, which can be computationally expensive. In this article, we examine recent works that aim to build diffusion models capable of performing sampling in one or a few steps."
-
-  - title: "Multi-modal and Multi-function Transformers"
-    badge: "April 2025"
-    path: "multi-modal-transformer"
-    tldr: "Multi-modal and multi-function Transformers enables a single architecture to process diverse data types such as language, images, and videos simultaneously. These models employ techniques like vector quantization and lookup-free quantization to map different modalities into a unified embedding space, allowing the Transformer to handle them within the same sequence. Beyond processing multiple data types, these architectures can also combine different functionalities-such as auto-regressive language generation and diffusion-based image creation-within a single model." 

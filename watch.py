@@ -13,7 +13,7 @@ class ChangeHandler(FileSystemEventHandler):
         if any(event.src_path.endswith(ext) for ext in ['.md', '.py', '.html', '.css', '.js', '.yaml']):
             print(f"File {event.src_path} has been modified")
             self.regenerate()
-    
+
     def on_created(self, event):
         if event.is_directory:
             return
@@ -22,10 +22,9 @@ class ChangeHandler(FileSystemEventHandler):
         if any(event.src_path.endswith(ext) for ext in ['.md', '.py', '.html', '.css', '.js', '.yaml']):
             print(f"File {event.src_path} has been created")
             self.regenerate()
-    
+
     def regenerate(self):
         print("Regenerating content...")
-        subprocess.run(["python", "parser/md.py"])
         subprocess.run(["python", "generate.py"])
         print("Content regenerated")
 
@@ -34,9 +33,9 @@ if __name__ == "__main__":
     observer = Observer()
     observer.schedule(event_handler, ".", recursive=True)
     observer.start()
-    
+
     http_server = subprocess.Popen(["python", "-m", "http.server", "8000", "--directory", "dist"])
-    
+
     try:
         print("Watching for file changes... (Press Ctrl+C to stop)")
         while True:

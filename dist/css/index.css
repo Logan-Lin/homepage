@@ -178,3 +178,8 @@ footer {
     display: none;
   }
 }
+
+.footer-text {
+  font-size: 0.8rem;
+  font-family: var(--link-font-family);
+}

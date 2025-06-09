@@ -30,15 +30,14 @@ block content %}
 </div>
 
 <article class="section" id="publications">
-    <div class="d-flex justify-content-between align-items-center mb-1">
+    <div class="d-flex align-items-center mb-1">
         <h3 class="section-title d-inline-block mb-0">
             <i class="bi bi-book"></i> Publications
         </h3>
-        <a
-            class="mb-0 link link-secondary link-underline-opacity-0 h5"
-            href="/publications/"
-            >View All <i class="bi bi-arrow-right-circle"></i
-        ></a>
+        <div class="flex-grow-1 mx-3" style="border-bottom: 1.5px dashed var(--border-color); height: 1px;"></div>
+        <a class="mb-0 link link-secondary link-underline-opacity-0 h5" href="/publications/">
+            View All
+        </a>
     </div>
     <div>
         <div id="primary-publications" class="list-group list-group-flush">
@@ -61,15 +60,14 @@ block content %}
 </article>
 
 <article class="section" id="projects">
-    <div class="d-flex justify-content-between align-items-center mb-1">
+    <div class="d-flex align-items-center mb-1">
         <h3 class="section-title d-inline-block mb-0">
             <i class="bi bi-code-slash"></i> Projects
         </h3>
-        <a
-            class="mb-0 link link-secondary link-underline-opacity-0 h5"
-            href="/projects/"
-            >View All <i class="bi bi-arrow-right-circle"></i
-        ></a>
+        <div class="flex-grow-1 mx-3" style="border-bottom: 1.5px dashed var(--border-color); height: 1px;"></div>
+        <a class="mb-0 link link-secondary link-underline-opacity-0 h5" href="/projects/">
+            View All
+        </a>
     </div>
     <div>
         <div id="primary-projects" class="list-group list-group-flush">
@@ -86,15 +84,14 @@ block content %}
 </article>
 
 <article class="section" id="presentations">
-    <div class="d-flex justify-content-between align-items-center mb-1">
+    <div class="d-flex align-items-center mb-1">
         <h3 class="section-title d-inline-block mb-0">
             <i class="bi bi-easel"></i> Presentations
         </h3>
-        <a
-            class="mb-0 link link-secondary link-underline-opacity-0 h5"
-            href="/presentations/"
-            >View All <i class="bi bi-arrow-right-circle"></i
-        ></a>
+        <div class="flex-grow-1 mx-3" style="border-bottom: 1.5px dashed var(--border-color); height: 1px;"></div>
+        <a class="mb-0 link link-secondary link-underline-opacity-0 h5" href="/presentations/">
+            View All
+        </a>
     </div>
     <div class="list-group list-group-flush" id="presentation-list">
         {% for presentation in data.presentations[:5] %} {% include

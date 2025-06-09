@@ -1,4 +1,4 @@
-{ pkgs ? import <nixpkgs> {}, isDev ? true, restartRemote ? false }:
+{ pkgs ? import <nixpkgs> {}, dev ? false, restartRemote ? false }:
 
 pkgs.mkShell {
   packages = with pkgs; [
@@ -22,7 +22,7 @@ pkgs.mkShell {
 
     python generate.py
 
-    ${if isDev then ''
+    ${if dev then ''
       pip install watchdog==6.0.0
       python watch.py && exit
     '' else ''

@@ -8,21 +8,7 @@
   <link rel="icon" href="/logo.webp" type="image/x-icon">
   <link href="/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/css/index.css">
-  <!-- Matomo -->
-  <script>
-    var _paq = window._paq = window._paq || [];
-    /* tracker methods like "setCustomDimension" should be called before "trackPageView" */
-    _paq.push(['trackPageView']);
-    _paq.push(['enableLinkTracking']);
-    (function() {
-      var u="//matomo.yanlincs.com/";
-      _paq.push(['setTrackerUrl', u+'matomo.php']);
-      _paq.push(['setSiteId', '1']);
-      var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-      g.async=true; g.src=u+'matomo.js'; s.parentNode.insertBefore(g,s);
-    })();
-  </script>
-  <!-- End Matomo Code -->
+  <script defer src="https://tracker.yanlincs.com/script.js" data-website-id="39b2ce27-b581-4c54-8f2d-ff7dbaeb70cc"></script>
 
   {% block extra_head %}{% endblock %}
 </head>

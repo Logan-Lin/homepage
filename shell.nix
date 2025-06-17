@@ -9,7 +9,7 @@ pkgs.mkShell {
 
   shellHook = let
     venvPath = "$HOME/venv/homepage";
-    remoteHost = "hetzner";
+    remoteHost = "personal-vps";
   in ''
     export PIP_REQUIRE_VIRTUALENV=1
     export VENV_PATH=${venvPath}
@@ -29,7 +29,7 @@ pkgs.mkShell {
       rsync -avP --delete ./{dist,compose.yml} ${remoteHost}:/root/homepage/
 
       ${if restartRemote then ''
-        ssh ${remoteHost} "cd /root/homepage && docker compose down && docker compose up -d"
+        ssh ${remoteHost} "cd /root/homepage && docker compose down && docker compose up -d --remove-orphans"
       '' else ""}
       exit
     ''}

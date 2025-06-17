@@ -1,0 +1,21 @@
+||bilibili.com^|$document
+
+# The recommendation list besides each video
+bilibili.com##.rec-list
+# The full main page
+bilibili.com##.container
+# Comment below the videos
+bilibili.com###commentapp
+# The navbar
+bilibili.com##.left-entry
+# The search bar
+bilibili.com###nav-searchform
+# The "news" bar on the right side of time flow
+t.bilibili.com##.right
+
+||youtube.com^|$document
+youtube.com###secondary
+youtube.com###comments
+youtube.com###logo
+youtube.com###center
+YouTube.com###start

@@ -1,5 +1,6 @@
 import os
 import yaml
+from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
 
 
@@ -8,6 +9,7 @@ if __name__ == '__main__':
         profile_data = yaml.safe_load(file)
 
     env = Environment(loader=FileSystemLoader('templates'))
+    current_year = datetime.now().year
 
     os.makedirs('dist', exist_ok=True)
     os.makedirs('dist/publications', exist_ok=True)
@@ -16,7 +18,7 @@ if __name__ == '__main__':
 
     def render_template(template_name, output_path, **kwargs):
         template = env.get_template(template_name)
-        html = template.render(**kwargs)
+        html = template.render(year=current_year, **kwargs)
 
         with open(output_path, 'w') as file:
             file.write(html)

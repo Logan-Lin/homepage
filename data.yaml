@@ -145,6 +145,7 @@ secondaryPublications:
       - "IEEE TKDE"
       - "2024"
     links:
+      Paper: "https://ieeexplore.ieee.org/document/10613424"
       Preprint: "https://arxiv.org/abs/2407.15899"
 
   - title: "Contrastive Pre-training with Adversarial Perturbations for Check-In Sequence Representation Learning"
@@ -263,5 +264,5 @@ presentations:
 services:
   - "IEEE, ACM member"
   - "Secretary of IEEE (Denmark Section) Computer Society"
-  - "Reviewer for journals including TKDE, TIST, TII, and TVT"
-  - "Member of program committees of KDD, ICLR, NeurIPS, AAAI, CVPR, ICCV, IJCAI, and WWW"
+  - "Reviewer for journals: TKDE, TIST, TII, and TVT"
+  - "Member of program committees of conferences: KDD, ICLR, NeurIPS, AAAI, CVPR, ICCV, IJCAI, WWW, and WACV"

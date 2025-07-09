@@ -15,6 +15,7 @@ if __name__ == '__main__':
     os.makedirs('dist/publications', exist_ok=True)
     os.makedirs('dist/projects', exist_ok=True)
     os.makedirs('dist/presentations', exist_ok=True)
+    os.makedirs('dist/teaching', exist_ok=True)
 
     def render_template(template_name, output_path, **kwargs):
         template = env.get_template(template_name)
@@ -29,4 +30,5 @@ if __name__ == '__main__':
     render_template('publications.html', 'dist/publications/index.html', data=profile_data, is_home_page=False)
     render_template('projects.html', 'dist/projects/index.html', data=profile_data, is_home_page=False)
     render_template('presentations.html', 'dist/presentations/index.html', data=profile_data, is_home_page=False)
+    render_template('teaching.html', 'dist/teaching/index.html', data=profile_data, is_home_page=False)
     print('Static site generation complete!')

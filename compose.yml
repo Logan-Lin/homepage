@@ -9,11 +9,10 @@ services:
       - proxy-network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.homepage.rule=Host(`www.yanlincs.com`) || Host(`www.ylresearch.com`)"
+      - "traefik.http.routers.homepage.rule=Host(`www.yanlincs.com`)"
       - "traefik.http.routers.homepage.tls=true"
       - "traefik.http.routers.homepage.tls.certresolver=cloudflare"
       - "traefik.http.routers.homepage.tls.domains[0].main=*.yanlincs.com"
-      - "traefik.http.routers.homepage.tls.domains[1].main=*.ylresearch.com"
       - "traefik.http.services.homepage.loadbalancer.server.port=80"
 
 

@@ -83,6 +83,22 @@ block content %}
     </div>
 </article>
 
+<article class="section" id="teaching">
+    <div class="d-flex align-items-center mb-1">
+        <h3 class="section-title d-inline-block mb-0">
+            <i class="bi bi-mortarboard"></i> Teaching
+        </h3>
+        <div class="flex-grow-1 mx-3" style="border-bottom: 1px dashed var(--border-color); height: 1px;"></div>
+        <a class="mb-0 link link-secondary link-underline-opacity-0 h5" href="/teaching/">
+            View All
+        </a>
+    </div>
+    <div class="list-group list-group-flush" id="teaching-list">
+        {% for teaching in data.teaching[:5] %} {% include
+        'partials/teaching.html' %} {% endfor %}
+    </div>
+</article>
+
 <article class="section" id="presentations">
     <div class="d-flex align-items-center mb-1">
         <h3 class="section-title d-inline-block mb-0">

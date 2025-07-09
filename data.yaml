@@ -224,6 +224,13 @@ secondaryProjects:
     desc: "This project explores how to generate high-quality spatial-temporal trajectory data and corresponding representations to address sparsity-related issues, thereby supporting a variety of downstream tasks."
     links: {}
 
+teaching:
+  - title: "AI Systems & Infrastructure"
+    tags:
+      - "Fall 2025"
+      - "Aalborg University"
+    links: {}
+
 presentations:
   - title: "Self-supervised Learning of Trajectory Data"
     tags:

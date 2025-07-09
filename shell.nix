@@ -8,7 +8,7 @@ pkgs.mkShell {
   ];
 
   shellHook = let
-    venvPath = "$HOME/venv/homepage";
+    venvPath = "$HOME/.venv/homepage";
     remoteHost = "personal-vps";
   in ''
     export PIP_REQUIRE_VIRTUALENV=1

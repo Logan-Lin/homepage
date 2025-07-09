@@ -1,3 +1,10 @@
+sections:
+  - publications
+  - projects
+  # - teaching
+  - presentations
+  - services
+
 primaryPublications:
   - title: "UVTM: Universal Vehicle Trajectory Modeling with ST Feature Domain Generation"
     authors: "<strong>Yan Lin</strong>, Jilin Hu, Shengnan Guo, Bin Yang, Christian S. Jensen, Youfang Lin, Huaiyu Wan"

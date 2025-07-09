@@ -29,6 +29,8 @@ block content %}
     </div>
 </div>
 
+{% for section in data.sections %}
+  {% if section == 'publications' %}
 <article class="section" id="publications">
     <div class="d-flex align-items-center mb-1">
         <h3 class="section-title d-inline-block mb-0">
@@ -58,7 +60,7 @@ block content %}
         >
     </div>
 </article>
-
+  {% elif section == 'projects' %}
 <article class="section" id="projects">
     <div class="d-flex align-items-center mb-1">
         <h3 class="section-title d-inline-block mb-0">
@@ -82,7 +84,7 @@ block content %}
         </div>
     </div>
 </article>
-
+  {% elif section == 'teaching' %}
 <article class="section" id="teaching">
     <div class="d-flex align-items-center mb-1">
         <h3 class="section-title d-inline-block mb-0">
@@ -98,7 +100,7 @@ block content %}
         'partials/teaching.html' %} {% endfor %}
     </div>
 </article>
-
+  {% elif section == 'presentations' %}
 <article class="section" id="presentations">
     <div class="d-flex align-items-center mb-1">
         <h3 class="section-title d-inline-block mb-0">
@@ -114,7 +116,7 @@ block content %}
         'partials/presentation.html' %} {% endfor %}
     </div>
 </article>
-
+  {% elif section == 'services' %}
 <article
     id="services"
     class="rounded text-body-emphasis bg-body-secondary flex-md-row my-4 position-relative p-4 transition-shadow"
@@ -131,5 +133,7 @@ block content %}
         </ul>
     </div>
 </article>
+  {% endif %}
+{% endfor %}
 
 {% endblock %} {% block extra_js %} {{ super() }} {% endblock %}
